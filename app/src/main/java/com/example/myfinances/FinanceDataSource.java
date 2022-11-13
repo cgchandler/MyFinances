@@ -22,8 +22,8 @@ public class FinanceDataSource {
         dbHelper.close();
     }
 
-    public boolean insertFinance(Finance f) {
-        boolean didSucceed = false;
+    public long insertFinance(Finance f) {
+        long financeID = -1;
         try {
             ContentValues initialValues = new ContentValues();
 
@@ -34,12 +34,12 @@ public class FinanceDataSource {
             initialValues.put("PaymentAmount", f.getPaymentAmount());
             initialValues.put("InterestRate", f.getInterestRate());
 
-            didSucceed = database.insert("Finance", null, initialValues) > 0;
+            financeID = database.insert("Finance", null, initialValues);
         }
         catch (Exception e) {
-            // do nothing -will return false if there's an exception
+            // do nothing -will return -1 if there's an exception
         }
-        return didSucceed;
+        return financeID;
     }
 
     public boolean updateFinance(Finance f) {

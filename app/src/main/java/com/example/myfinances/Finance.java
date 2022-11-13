@@ -2,7 +2,7 @@ package com.example.myfinances;
 
 public class Finance {
 
-    private int financeID;
+    private long financeID;
     private String accountType;
     private String accountNumber;
     private double initialBalance;
@@ -14,11 +14,11 @@ public class Finance {
         financeID = -1;
     }
 
-    public int getFinanceID() {
+    public long getFinanceID() {
         return financeID;
     }
 
-    public void setFinanceID(int financeID) {
+    public void setFinanceID(long financeID) {
         this.financeID = financeID;
     }
 

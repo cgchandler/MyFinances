@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         // Set the default Account Type to Checking
         RadioButton rbChecking = findViewById(R.id.radioChecking);
         rbChecking.setChecked(true);
-        initAvailbleButtons("CHECKING", true, false, true, false, false);
+        initChecking();
 
         // Setup the Listener for onCheckedChanged
         RadioGroup rgAccountType = findViewById(R.id.radioGroupAccountType);
@@ -75,17 +75,28 @@ public class MainActivity extends AppCompatActivity {
                 clearScreen();
 
                 if (rbCD.isChecked()) {
-                    initAvailbleButtons("CD", true, true, true, false, true);
+                    initCD();
                 }
                 else if (rbLoan.isChecked()) {
-                    initAvailbleButtons("LOAN", true, true, true, true, true);
+                    initLoan();
                 }
                 else if (rbChecking.isChecked()) {
-                    initAvailbleButtons("CHECKING", true, false, true, false, false);
+                    initChecking();
                 }
             }
         });
 
+    }
+
+    private void initCD() {
+        initAvailbleButtons("CD", true, true, true, false, true);
+    }
+
+    private void initLoan() {
+        initAvailbleButtons("LOAN", true, true, true, true, true);
+    }
+    private void initChecking() {
+        initAvailbleButtons("CHECKING", true, false, true, false, false);
     }
 
     private void initAvailbleButtons(String accountType,
@@ -121,8 +132,10 @@ public class MainActivity extends AppCompatActivity {
                 FinanceDataSource ds = new FinanceDataSource(MainActivity.this);
                 try {
                     ds.Open();
+                    initTextChangedEvents();
                     if (currentFinance.getFinanceID() == -1) {
-                        wasSuccessful = ds.insertFinance(currentFinance);
+                        currentFinance.setFinanceID(ds.insertFinance(currentFinance));
+                        wasSuccessful = (currentFinance.getFinanceID() > 0);
                     }
                     else {
                         wasSuccessful = ds.updateFinance(currentFinance);
@@ -136,37 +149,44 @@ public class MainActivity extends AppCompatActivity {
 
                 if (wasSuccessful) {
                     // Display Success Message!
-                    AlertDialog ad = new AlertDialog.Builder(MainActivity.this).create();
-                    ad.setTitle("Success");
-                    ad.setCancelable(false);
-                    ad.setMessage("The finance record was successfully saved!");
-                    ad.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            ad.cancel();
-                        }
-                    });
-                    ad.show();
+                    String alertValue = getResources().getString(R.string.success_message, currentFinance.getAccountType(), currentFinance.getFinanceID(), currentFinance.getAccountNumber());
+                    displayAlert(alertValue);
                     // Clear the Data Entry Screen
                     clearScreen();
+                    // Reset the Finance Object
+                    currentFinance = new Finance();
+                    // Set the default Account Type to Checking
+                    initChecking();
                 }
                 else {
                     // Display Failure Message!
-                    AlertDialog ad = new AlertDialog.Builder(MainActivity.this).create();
-                    ad.setTitle("Failure");
-                    ad.setCancelable(false);
-                    ad.setMessage("The finance record failed to save!");
-                    ad.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            ad.cancel();
-                        }
-                    });
-                    ad.show();
+                    String alertValue = getResources().getString(R.string.failure_message);
+                    displayAlert(alertValue);
                 }
 
             }
         });
+    }
+
+    private void displayAlert(String alertValue){
+        AlertDialog ad = new AlertDialog.Builder(MainActivity.this).create();
+        ad.setTitle("Success");
+        ad.setCancelable(false);
+        ad.setMessage(alertValue);
+        ad.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ad.cancel();
+            }
+        });
+        ad.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                int textSize = getResources().getDimensionPixelSize(R.dimen.alert_text_size);
+                ((TextView)ad.findViewById(android.R.id.message)).setTextSize(textSize);
+            }
+        });
+        ad.show();
     }
 
     private void initButtonCancel() {
@@ -265,7 +285,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void clearScreen()
     {
-
         // Set the Initial Text Values
         EditText editAccountNumber = findViewById(R.id.editAccountNumber);
         editAccountNumber.setText("");

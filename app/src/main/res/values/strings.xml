@@ -14,4 +14,6 @@
     <string name="current_balance">Current Balance:</string>
     <string name="account_number">Account Number:</string>
     <string name="loan">Loan</string>
+    <string name="success_message">The %1s record ID %2d was successfully saved for account %3s</string>
+    <string name="failure_message">The finance record failed to save!</string>
 </resources>
