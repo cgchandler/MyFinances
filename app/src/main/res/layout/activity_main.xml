@@ -34,7 +34,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/cd"
+            android:text="@string/account_type_cd"
             android:textSize="@dimen/prompt_text_size" />
 
         <RadioButton
@@ -42,7 +42,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/loan"
+            android:text="@string/account_type_loan"
             android:textSize="@dimen/prompt_text_size" />
 
         <RadioButton
@@ -50,7 +50,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/checking"
+            android:text="@string/account_type_checking"
             android:textSize="@dimen/prompt_text_size" />
     </RadioGroup>
 

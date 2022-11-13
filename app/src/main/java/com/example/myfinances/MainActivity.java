@@ -89,14 +89,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initCD() {
-        initAvailbleButtons("CD", true, true, true, false, true);
+        initAvailbleButtons(getResources().getString(R.string.account_type_cd),
+                true, true, true, false, true);
     }
 
     private void initLoan() {
-        initAvailbleButtons("LOAN", true, true, true, true, true);
+        initAvailbleButtons(getResources().getString(R.string.account_type_loan),
+                true, true, true, true, true);
     }
     private void initChecking() {
-        initAvailbleButtons("CHECKING", true, false, true, false, false);
+        initAvailbleButtons(getResources().getString(R.string.account_type_checking),
+                true, false, true, false, false);
     }
 
     private void initAvailbleButtons(String accountType,
@@ -123,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initButtonSave() {
         Button buttonSave = findViewById(R.id.buttonSave);
+        buttonSave.setEnabled(false);   // Save button is initially disabled
         buttonSave.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -149,8 +153,9 @@ public class MainActivity extends AppCompatActivity {
 
                 if (wasSuccessful) {
                     // Display Success Message!
-                    String alertValue = getResources().getString(R.string.success_message, currentFinance.getAccountType(), currentFinance.getFinanceID(), currentFinance.getAccountNumber());
-                    displayAlert(alertValue);
+                    String alertTitle = getResources().getString(R.string.success_title);
+                    String alertValue = getResources().getString(R.string.success_message, currentFinance.getAccountType(), currentFinance.getAccountNumber(), currentFinance.getFinanceID());
+                    displayAlertDialog(alertTitle, alertValue);
                     // Clear the Data Entry Screen
                     clearScreen();
                     // Reset the Finance Object
@@ -160,17 +165,18 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else {
                     // Display Failure Message!
+                    String alertTitle = getResources().getString(R.string.failure_title);
                     String alertValue = getResources().getString(R.string.failure_message);
-                    displayAlert(alertValue);
+                    displayAlertDialog(alertTitle, alertValue);
                 }
 
             }
         });
     }
 
-    private void displayAlert(String alertValue){
+    private void displayAlertDialog(String titleValue, String alertValue){
         AlertDialog ad = new AlertDialog.Builder(MainActivity.this).create();
-        ad.setTitle("Success");
+        ad.setTitle(titleValue);
         ad.setCancelable(false);
         ad.setMessage(alertValue);
         ad.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
@@ -214,6 +220,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 currentFinance.setAccountNumber(editAccountNumber.getText().toString());
+                // Only enable the Save button if an account number is entered
+                Button buttonSave = findViewById(R.id.buttonSave);
+                buttonSave.setEnabled(currentFinance.getAccountNumber().length() > 0);
             }
         });
 
